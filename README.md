@@ -42,7 +42,7 @@ sudo pacman -S rtl-sdr multimon-ng
 ### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/votre-utilisateur/pocsag_decoder.git
+git clone https://github.com/F4JTV/pocsag_decoder.git
 cd pocsag_decoder
 ```
 
