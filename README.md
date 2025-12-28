@@ -6,7 +6,7 @@ Application web Django pour la réception et le décodage de trames POCSAG en te
 
 - 📡 Réception en temps réel des messages POCSAG (512, 1200, 2400 bauds)
 - 🔍 Filtrage par RIC (adresse), date et contenu du message
-- 🔄 Déduplication automatique des messages répétés
+- 🔄 Suppression automatique des messages en doublon
 - 🌙 Mode sombre / clair
 - 📊 Interface web responsive avec mise à jour automatique (HTMX)
 - ⚙️ Configuration flexible (fréquence, gain, bias-t)
@@ -16,7 +16,6 @@ Application web Django pour la réception et le décodage de trames POCSAG en te
 ### Matériel
 
 - Clé RTL-SDR (RTL2832U)
-- Antenne adaptée à la fréquence POCSAG cible
 
 ### Logiciels
 
@@ -83,7 +82,7 @@ python manage.py runserver 0.0.0.0:8000
 
 L'interface est accessible à l'adresse : http://localhost:8000
 
-### Démarrer l'écoute POCSAG
+### Démarrer le décodage POCSAG
 
 Dans un autre terminal :
 
@@ -111,7 +110,7 @@ python manage.py listen_pocsag
 # Fréquence personnalisée avec gain ajusté
 python manage.py listen_pocsag -f 466.075M -g 40
 
-# Activer le bias-t pour antenne active
+# Activer le bias-t
 python manage.py listen_pocsag -T
 
 # Déduplication à 5 minutes
@@ -149,7 +148,7 @@ pocsag_decoder/
 ├── decoder/
 │   ├── management/
 │   │   └── commands/
-│   │       ├── listen_pocsag.py    # Commande d'écoute RTL-SDR
+│   │       ├── listen_pocsag.py    # Commande de décodage RTL-SDR
 │   │       └── clear_messages.py   # Commande de purge
 │   ├── migrations/
 │   ├── templates/
