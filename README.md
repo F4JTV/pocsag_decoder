@@ -2,8 +2,6 @@
 
 Application web Django pour la réception et le décodage de trames POCSAG en temps réel à l'aide d'un récepteur RTL-SDR et de multimon-ng.
 
-![Interface POCSAG Decoder](docs/screenshot.png)
-
 ## Fonctionnalités
 
 - 📡 Réception en temps réel des messages POCSAG (512, 1200, 2400 bauds)
@@ -259,10 +257,6 @@ sudo rmmod dvb_usb_rtl28xxu rtl2832
 ## Licence
 
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-## Auteur
-
-F4JTV - ADRASEC 06
 
 ## Remerciements
 
