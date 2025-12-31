@@ -8,6 +8,11 @@ from datetime import timedelta
 from .models import PocsagMessage, ListenerStatus
 
 
+# Limites autorisées pour le nombre de messages
+ALLOWED_LIMITS = [20, 50, 100, 150, 200, 500, 1000]
+DEFAULT_LIMIT = 50
+
+
 def get_dedupe_minutes():
     """
     Récupère le temps de déduplication configuré.
@@ -37,14 +42,30 @@ def get_dedupe_minutes():
     return default_minutes
 
 
+def get_limit_from_request(request):
+    """
+    Récupère et valide le paramètre limit depuis la requête.
+    Retourne une valeur autorisée ou la valeur par défaut.
+    """
+    try:
+        limit = int(request.GET.get('limit', DEFAULT_LIMIT))
+        if limit in ALLOWED_LIMITS:
+            return limit
+    except (ValueError, TypeError):
+        pass
+    return DEFAULT_LIMIT
+
+
 def index(request):
-    messages = get_deduplicated_messages()[:100]
+    limit = get_limit_from_request(request)
+    messages = get_deduplicated_messages()[:limit]
     status = ListenerStatus.get_status()
     dedupe_minutes = get_dedupe_minutes()
     return render(request, 'decoder/index.html', {
         'messages': messages,
         'listener_status': status,
-        'dedupe_minutes': dedupe_minutes
+        'dedupe_minutes': dedupe_minutes,
+        'current_limit': limit
     })
 
 
@@ -108,12 +129,13 @@ def get_messages(request):
     address_filter = request.GET.get('address', '').strip()
     date_filter = request.GET.get('date', '').strip()
     search_filter = request.GET.get('search', '').strip()
+    limit = get_limit_from_request(request)
 
     # Obtenir les messages dédupliqués et filtrés
     messages = get_deduplicated_messages(address_filter, date_filter, search_filter)
 
-    # Limiter à 50 résultats
-    messages = messages[:50]
+    # Limiter aux N résultats demandés
+    messages = messages[:limit]
 
     html = ""
     for msg in messages:
@@ -141,7 +163,6 @@ def get_messages(request):
 def get_status(request):
     """Retourne le badge de statut mis à jour avec infos de configuration"""
     status = ListenerStatus.get_status()
-    dedupe_minutes = get_dedupe_minutes()
 
     if status.is_running:
         badge_class = "bg-success"
