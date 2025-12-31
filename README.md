@@ -50,8 +50,6 @@ cd pocsag_decoder
 ```bash
 python -m venv venv
 source venv/bin/activate  # Linux/macOS
-# ou
-venv\Scripts\activate     # Windows
 ```
 
 ### 3. Installer les dépendances Python
