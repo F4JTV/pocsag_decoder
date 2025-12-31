@@ -146,17 +146,29 @@
             <h5 class="mb-3" data-bs-toggle="collapse" href="#filter-form" role="button" aria-expanded="false" aria-controls="filter-form"><i class="bi bi-funnel"></i> Filtres</h5>
             <form id="filter-form" class="collapse">
                 <div class="row g-3">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="address-filter" class="form-label">RIC</label>
-                        <input type="text" class="form-control" id="address-filter" name="address" placeholder="Ex: 123456" hx-get="/messages/" hx-trigger="keyup changed delay:500ms" hx-target="#message-tbody" hx-include="[name='date'], [name='search']">
+                        <input type="text" class="form-control" id="address-filter" name="address" placeholder="Ex: 123456" hx-get="/messages/" hx-trigger="keyup changed delay:500ms" hx-target="#message-tbody" hx-include="[name='date'], [name='search'], [name='limit']">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="date-filter" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="date-filter" name="date" hx-get="/messages/" hx-trigger="change" hx-target="#message-tbody" hx-include="[name='address'], [name='search']">
+                        <input type="date" class="form-control" id="date-filter" name="date" hx-get="/messages/" hx-trigger="change" hx-target="#message-tbody" hx-include="[name='address'], [name='search'], [name='limit']">
                     </div>
                     <div class="col-md-4">
                         <label for="search-filter" class="form-label">Recherche dans le message</label>
-                        <input type="text" class="form-control" id="search-filter" name="search" placeholder="Mot-clé..." hx-get="/messages/" hx-trigger="keyup changed delay:500ms" hx-target="#message-tbody" hx-include="[name='address'], [name='date']">
+                        <input type="text" class="form-control" id="search-filter" name="search" placeholder="Mot-clé..." hx-get="/messages/" hx-trigger="keyup changed delay:500ms" hx-target="#message-tbody" hx-include="[name='address'], [name='date'], [name='limit']">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="limit-filter" class="form-label">Afficher</label>
+                        <select class="form-select" id="limit-filter" name="limit" hx-get="/messages/" hx-trigger="change" hx-target="#message-tbody" hx-include="[name='address'], [name='date'], [name='search']">
+                            <option value="20">20 messages</option>
+                            <option value="50" selected>50 messages</option>
+                            <option value="100">100 messages</option>
+                            <option value="150">150 messages</option>
+                            <option value="200">200 messages</option>
+                            <option value="500">500 messages</option>
+                            <option value="1000">1000 messages</option>
+                        </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="button" class="btn btn-secondary w-100" onclick="clearFilters()">
@@ -181,7 +193,7 @@
                             <th>Message</th>
                         </tr>
                     </thead>
-                    <tbody id="message-tbody" hx-get="/messages/" hx-trigger="every 2s" hx-include="[name='address'], [name='date'], [name='search']" hx-swap="innerHTML">
+                    <tbody id="message-tbody" hx-get="/messages/" hx-trigger="every 2s" hx-include="[name='address'], [name='date'], [name='search'], [name='limit']" hx-swap="innerHTML">
                         {% for msg in messages %}
                             <tr>
                                 <td style="width: 15%">{{ msg.timestamp|date:"d/m/Y H:i:s" }}</td>
@@ -218,11 +230,20 @@
             themeToggle.checked = true;
         }
 
-        // Changement du switch
+        // Charger la préférence du nombre de messages
+        const savedLimit = localStorage.getItem('messageLimit') || '50';
+        document.getElementById('limit-filter').value = savedLimit;
+
+        // Changement du switch thème
         themeToggle.addEventListener('change', function() {
             const theme = this.checked ? 'dark' : 'light';
             htmlElement.setAttribute('data-bs-theme', theme);
             localStorage.setItem('theme', theme);
+        });
+
+        // Sauvegarder la préférence du nombre de messages
+        document.getElementById('limit-filter').addEventListener('change', function() {
+            localStorage.setItem('messageLimit', this.value);
         });
 
         // Fonction pour effacer les filtres
@@ -230,6 +251,8 @@
             document.getElementById('address-filter').value = '';
             document.getElementById('date-filter').value = '';
             document.getElementById('search-filter').value = '';
+            document.getElementById('limit-filter').value = '50';
+            localStorage.setItem('messageLimit', '50');
 
             // Déclencher la mise à jour du tableau
             htmx.trigger('#message-tbody', 'refresh');
