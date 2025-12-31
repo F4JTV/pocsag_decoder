@@ -257,7 +257,7 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 ## Remerciements
 
-- [multimon-ng](https://github.com/EliasOeworblmh/multimon-ng) - Décodeur multi-protocole
+- [multimon-ng](https://github.com/EliasOenal/multimon-ng) - Décodeur multi-protocole
 - [rtl-sdr](https://osmocom.org/projects/rtl-sdr/wiki) - Pilotes RTL-SDR
 - [HTMX](https://htmx.org/) - Interactivité sans JavaScript complexe
 - [Bootstrap](https://getbootstrap.com/) - Framework CSS
